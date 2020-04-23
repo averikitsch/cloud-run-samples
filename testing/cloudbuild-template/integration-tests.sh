@@ -1,0 +1,1 @@
+curl $SERVICE_URL

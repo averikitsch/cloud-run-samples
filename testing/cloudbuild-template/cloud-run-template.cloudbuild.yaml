@@ -58,6 +58,8 @@ steps:
 # Uncomment if skipping teardown to associate build with container image.
 # images:
 # - 'gcr.io/${PROJECT_ID}/${_SERVICE}:${COMMIT_SHA}'
+tags:
+- 'Cloud-Run-Build'
 
 substitutions:
   _CLOUDSDK_VERSION: latest

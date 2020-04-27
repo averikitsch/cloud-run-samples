@@ -3,10 +3,10 @@ steps:
 - id: 'Build and Push Container Image'
   name: 'maven:latest'
   entrypoint: '/bin/bash'
-  args: 
+  args:
     - '-c'
-    - | 
-      mvn compile jib:build -Dimage=gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}
+    - |
+      mvn compile jib:build -Dimage=gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA} -f java-sample/
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:$_CLOUDSDK_VERSION'
@@ -40,7 +40,7 @@ steps:
   args:
   - '-c'
   - |
-    SERVICE_URL=$(cat _service_url) mvn verify
+    SERVICE_URL=$(cat _service_url) mvn verify -f java-sample/
 
 - id: 'Teardown'
   name: 'gcr.io/cloud-builders/gcloud:$_CLOUDSDK_VERSION'

@@ -56,6 +56,7 @@ steps:
 # images:
 # - 'gcr.io/${PROJECT_ID}/${_SERVICE}:${COMMIT_SHA}'
 
+
 substitutions:
   _CLOUDSDK_VERSION: latest
   _CLOUDSDK_REGION: us-central1

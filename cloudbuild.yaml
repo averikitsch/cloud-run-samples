@@ -1,0 +1,9 @@
+steps:
+
+- id: 'Lint Dockerfile'
+  name: 'hadolint/hadolint'
+  entrypoint: '/bin/bash'
+  args:
+    - '-c'
+    - |
+      hadolint Dockerfile

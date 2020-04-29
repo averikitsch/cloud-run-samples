@@ -3,10 +3,11 @@ steps:
 - id: 'Build and Push Container Image'
   name: 'maven:latest'
   entrypoint: '/bin/bash'
-  args: 
+  args:
     - '-c'
-    - | 
+    - |
       mvn compile jib:build -Dimage=gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}
+  dir: java-sample
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:$_CLOUDSDK_VERSION'

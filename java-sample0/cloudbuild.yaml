@@ -64,7 +64,7 @@ steps:
 
 # TODO: Update these User-defined substitutions
 substitutions:
-  _SERVICE: java-sample
-  _SAMPLE_DIR: java-sample
+  _SERVICE: java-sample0
+  _SAMPLE_DIR: java-sample0
   _SERVICE_REGION: us-central1
   _CLOUDSDK_VERSION: latest

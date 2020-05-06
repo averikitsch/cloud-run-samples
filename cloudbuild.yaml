@@ -1,27 +1,27 @@
 steps:
-- name: 'gcr.io/cloud-builders/gcloud'
-  id: Trigger Each Sample Build
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    for sample in */; do
-      config="${sample}cloudbuild.yaml"
-      if [[ ! -f "${config}" ]]; then
-        continue
-      fi
-
-      echo "Building $sample ... "
-      (
-        gcloud builds submit --config=${config} --substitutions SHORT_SHA=nightly
-        rtn=$?
-        if [[ $rtn -ne 0 ]]; then
-          exit 1
-        fi
-      ) &
-    done
-    wait
-
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   id: Trigger Each Sample Build
+#   entrypoint: 'bash'
+#   args:
+#   - '-c'
+#   - |
+#     for sample in */; do
+#       config="${sample}cloudbuild.yaml"
+#       if [[ ! -f "${config}" ]]; then
+#         continue
+#       fi
+#
+#       echo "Building $sample ... "
+#       (
+#         gcloud builds submit --config=${config} --substitutions SHORT_SHA=nightly
+#         rtn=$?
+#         if [[ $rtn -ne 0 ]]; then
+#           exit 1
+#         fi
+#       ) &
+#     done
+#     wait
+#
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Trigger Top Level Builds
   entrypoint: 'bash'
@@ -36,13 +36,11 @@ steps:
       fi
 
       echo "Building $config ... "
-      (
-        gcloud builds submit --config $config
-        rtn=$?
-        if [[ $rtn -ne 0 ]]; then
-          code=1
-        fi
-      ) &
+      gcloud builds submit --config $config
+      rtn=$?
+      if [[ $rtn -ne 0 ]]; then
+        code=1
+      fi
     done
     wait
     exit "$code"

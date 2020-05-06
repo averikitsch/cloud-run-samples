@@ -1,9 +1,37 @@
 steps:
-
-- id: 'Lint Dockerfile'
-  name: 'hadolint/hadolint:latest-debian'
-  entrypoint: '/bin/bash'
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Trigger Each Sample Build
+  entrypoint: 'bash'
   args:
-    - '-c'
-    - |
-      hadolint */Dockerfile
+  - '-c'
+  - |
+    for sample in */; do
+      config="${sample}cloudbuild.yaml"
+      if [[ ! -f "${config}" ]]; then
+        continue
+      fi
+
+      echo "Building $sample ... "
+      (
+        gcloud builds submit --config=${config} --substitutions SHORT_SHA=nightly
+      ) &
+    done
+    wait
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Trigger Top Level Builds
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    for config in *.cloudbuild.yaml; do
+      if [[ ! -f "${config}" ]]; then
+        continue
+      fi
+
+      echo "Building $config ... "
+      (
+        gcloud builds submit --config $config
+      ) &
+    done
+    wait

@@ -2,23 +2,24 @@ steps:
 
 - id: 'Build Container Image'
   name: 'gcr.io/cloud-builders/docker:latest'
-  args: ['build', '-t', 'gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}', '$_SAMPLE']
+  args: ['build', '-t', 'gcr.io/${PROJECT_ID}/${_SERVICE}:${SHORT_SHA}', '.']
+  dir: '${_SAMPLE_DIR}'
 
 - id: 'Push Container Image'
   name: 'gcr.io/cloud-builders/docker:latest'
-  args: ['push', 'gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}']
+  args: ['push', 'gcr.io/${PROJECT_ID}/${_SERVICE}:${SHORT_SHA}']
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:$_CLOUDSDK_VERSION'
   args:
   - 'run'
   - 'deploy'
-  - '${_SERVICE}'
+  - '${_SERVICE}-${SHORT_SHA}'
   - '--image'
-  - 'gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}'
-  - '--allow-unauthenticated'
+  - 'gcr.io/${PROJECT_ID}/${_SERVICE}:${SHORT_SHA}'
+  - '--no-allow-unauthenticated'
   - '--region'
-  - '${_CLOUDSDK_REGION}'
+  - '${_SERVICE_REGION}'
   - '--platform'
   - 'managed'
 
@@ -29,18 +30,21 @@ steps:
   - '-c'
   - |
     get_url() {
-        gcloud run services describe ${_SERVICE} --format 'value(status.url)' \
-          --platform managed --region ${_CLOUDSDK_REGION}
+        gcloud run services describe ${_SERVICE}-${SHORT_SHA} --format 'value(status.url)' \
+          --platform managed --region ${_SERVICE_REGION}
     }
     echo $(get_url) > _service_url
     echo "Cloud Run URL for ${_SERVICE} is $(cat _service_url)"
+
 - id: 'Integration Tests'
-  name: 'maven:latest'
-  entrypoint: '/bin/bash'
+  # TODO: Update the following image name, entrypoint, and args to fit your testing needs
+  name: 'alpine:3'
+  entrypoint: '/bin/sh'
+  dir: '${_SAMPLE_DIR}'
   args:
   - '-c'
   - |
-    SERVICE_URL=$(cat _service_url) mvn verify
+    echo "Add integration tests!"
 
 - id: 'Teardown'
   name: 'gcr.io/cloud-builders/gcloud:$_CLOUDSDK_VERSION'
@@ -48,17 +52,19 @@ steps:
   args:
   - '-c'
   - |
-    set -ex
-    gcloud --quiet container images delete gcr.io/${PROJECT_ID}/${_SERVICE_TAG}:${COMMIT_SHA}
-    gcloud --quiet run services delete ${_SERVICE} --region ${_CLOUDSDK_REGION} --platform managed
+    set -x
+    gcloud --quiet container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${SHORT_SHA}
+    gcloud --quiet run services delete ${_SERVICE}-${SHORT_SHA} --region ${_SERVICE_REGION} --platform managed
+    set +x
+    echo "View build details in the console: https://console.cloud.google.com/cloud-build/builds/${BUILD_ID}"
 
 # Uncomment if skipping teardown to associate build with container image.
 # images:
-# - 'gcr.io/${PROJECT_ID}/${_SERVICE}:${COMMIT_SHA}'
+# - 'gcr.io/${PROJECT_ID}/${_SERVICE}:${SHORT_SHA}'
 
+# TODO: Update these User-defined substitutions
 substitutions:
-  _SAMPLE: java-sample
+  _SERVICE: java-sample
+  _SAMPLE_DIR: java-sample
+  _SERVICE_REGION: us-central1
   _CLOUDSDK_VERSION: latest
-  _CLOUDSDK_REGION: us-central1
-  _SERVICE: hello-world
-  _SERVICE_TAG: java-cloud-run-hello-world

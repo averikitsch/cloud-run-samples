@@ -1,6 +1,6 @@
 # Use the official maven/Java 8 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3-jdk-8-slim AS build-env
+FROM maven AS build-env
 
 # Set the working directory to /app
 WORKDIR /app

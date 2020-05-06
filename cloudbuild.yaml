@@ -28,6 +28,8 @@ steps:
   args:
   - '-c'
   - |
+    set -eo pipefail
+    code=0
     for config in *.cloudbuild.yaml; do
       if [[ ! -f "${config}" ]]; then
         continue
@@ -38,8 +40,9 @@ steps:
         gcloud builds submit --config $config
         rtn=$?
         if [[ $rtn -ne 0 ]]; then
-          exit 1
+          code=1
         fi
       ) &
     done
     wait
+    exit "$code"

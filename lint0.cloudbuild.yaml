@@ -5,4 +5,4 @@ steps:
   args:
     - '-c'
     - |
-      hadolint java-sample0/Dockerfile
+      hadolint java-sample/Dockerfile

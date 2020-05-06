@@ -14,8 +14,8 @@ steps:
       echo "Building $sample ... "
       (
         gcloud builds submit --config=${config} --substitutions SHORT_SHA=nightly
-        EXIT=$?
-        if [[ $EXIT -ne 0 ]]; then
+        rtn=$?
+        if [[ $rtn -ne 0 ]]; then
           exit 1
         fi
       ) &
@@ -36,8 +36,8 @@ steps:
       echo "Building $config ... "
       (
         gcloud builds submit --config $config
-        EXIT=$?
-        if [[ $EXIT -ne 0 ]]; then
+        rtn=$?
+        if [[ $rtn -ne 0 ]]; then
           exit 1
         fi
       ) &

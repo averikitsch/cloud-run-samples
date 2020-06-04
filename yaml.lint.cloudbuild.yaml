@@ -2,5 +2,7 @@ steps:
 - id: 'Lint YAML'
   name: 'cytopia/yamllint'
   entrypoint: '/bin/sh'
-  args: |
-  - **/*.yaml
+  args:
+  - '-c'
+  - |
+    yamllint **/*.yaml

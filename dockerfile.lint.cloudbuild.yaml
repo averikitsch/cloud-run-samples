@@ -3,6 +3,6 @@ steps:
   name: 'hadolint/hadolint:latest-debian'
   entrypoint: '/bin/bash'
   args:
-  - '-c'
+  - -c
   - |
     hadolint **/*Dockerfile

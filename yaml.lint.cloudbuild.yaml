@@ -5,6 +5,6 @@ steps:
   args:
   - -c
   - |
-    for f in $(find * -name '*yaml')
+    for f in $(find . -name '*.yaml' -not -path "./testing/*")
       do yamllint $f
     done

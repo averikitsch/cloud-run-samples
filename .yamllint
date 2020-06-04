@@ -1,0 +1,8 @@
+---
+
+ignore: |
+  /testing/
+  */*cloudbuild.yaml
+
+rules:
+  document-start: disable

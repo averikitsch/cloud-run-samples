@@ -1,0 +1,8 @@
+steps:
+- id: 'Lint Shell'
+  name: 'koalaman/shellcheck-alpine'
+  entrypoint: '/bin/sh'
+  args:
+  - '-c'
+  - |
+    shellcheck **/*.sh

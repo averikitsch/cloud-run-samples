@@ -5,4 +5,6 @@ steps:
   args:
   - -c
   - |
-    shellcheck **/*.sh
+    for f in $(find * -name '*sh')
+      do shellcheck **/*.sh
+    done

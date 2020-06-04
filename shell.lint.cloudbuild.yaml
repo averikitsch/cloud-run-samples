@@ -6,5 +6,5 @@ steps:
   - -c
   - |
     for f in $(find * -name '*sh')
-      do shellcheck **/*.sh
+      do shellcheck $f
     done

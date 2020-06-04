@@ -5,4 +5,6 @@ steps:
   args:
   - -c
   - |
-    hadolint **/*Dockerfile
+    for f in $(find * -name '*sh')
+      do hadolint $f
+    done

@@ -5,4 +5,6 @@ steps:
   args:
   - -c
   - |
-    yamllint **/*.yaml
+    for f in $(find * -name '*yaml')
+      do yamllint $f
+    done

@@ -1,0 +1,8 @@
+steps:
+- id: 'Lint Dockerfile'
+  name: 'hadolint/hadolint:latest-debian'
+  entrypoint: '/bin/bash'
+  args:
+  - '-c'
+  - |
+    hadolint **/*Dockerfile
